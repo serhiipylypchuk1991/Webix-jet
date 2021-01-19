@@ -1,5 +1,6 @@
 export const useful_functions = {
 
+	//For validatoin of inputs
 	titleValidation(value,rightLength){
 		var regExpResolt = value.search(/[\§\<\>@#\$\^&\*\+=\\~\[\]\{\}\|_]/g),
 				argLength = value.length;
@@ -10,6 +11,7 @@ export const useful_functions = {
 		}
 	},
 
+	//For scrolling to the newly added elements
 	scrollToLastAddedElement(component,show,select){
 		var data_obj = component.data.pull;
 		var last_id = Object.keys(data_obj)[Object.keys(data_obj).length-1];
