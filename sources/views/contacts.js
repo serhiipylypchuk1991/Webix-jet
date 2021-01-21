@@ -1,10 +1,8 @@
 import {JetView} from "webix-jet";
 import {contacts} from "models/contacts";
-import {useful_functions} from "models/useful";
-
+import {textValidation} from "models/validate_function";
 export default class ContactsView extends JetView{
 	config(){
-
 		var contacts_list = {
 			view:"list",
 			id:"contacts_list",
@@ -13,7 +11,6 @@ export default class ContactsView extends JetView{
 			scrollX:false,
 			select:true
 		};
-
 		var contacts_form = {
       view:"form",
       id:"contacts_form",
@@ -36,25 +33,21 @@ export default class ContactsView extends JetView{
       ],
 			rules:{
         Name:function(value){
-					return useful_functions.titleValidation(value,20);
+					return textValidation(value,20);
 				},
 				Email:webix.rules.isEmail
     	}
     };
-
 		return {
 			cols:[
 				contacts_list,
 				contacts_form
 			]
 		};
-
 	}
-
-	init(view){
+	init(){
 		$$("contacts_list").parse(contacts);
 	}
-
 	clearHandler(form_id){
 		var form_collection = $$(form_id);
 		webix.confirm({
@@ -71,26 +64,21 @@ export default class ContactsView extends JetView{
 			}
 		);
   }
-
 	saveHandler(form_id){
 		var form_collection = $$(form_id);
 		if(form_collection.validate()){
-
 			webix.message({
 				text:"Data has edited successfully",
 				type:"success",
 				expire:3000
 			});
-
 			form_collection.clear();
 		}else{
-
 			webix.message({
 				text:"Please, enter the correct data in the fields of the form",
 				type:"error",
 				expire:3000
 			});
-
 		}
 	}
 }
