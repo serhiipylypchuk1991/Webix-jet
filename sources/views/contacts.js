@@ -30,7 +30,7 @@ export default class ContactsView extends JetView{
 				},{}
 			],
 			rules:{
-		    Name:function(value){
+				Name:function(value){
 					return textValidation(value,20);
 				},
 				Email:webix.rules.isEmail
@@ -53,13 +53,13 @@ export default class ContactsView extends JetView{
 			text:"Do you still want to continue?",
 			type:"confirm-warning"
 		}).then(
-		function(){
-			form_collection.clear();
-			form_collection.clearValidation();
-		},
-		function(){
-			webix.message("Rejected");
-		});
+			function(){
+				form_collection.clear();
+				form_collection.clearValidation();
+			},
+			function(){
+				webix.message("Rejected");
+			});
 	}
 	saveHandler(form_id){
 		var form_collection = webix.$$(form_id);

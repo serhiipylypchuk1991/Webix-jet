@@ -1,13 +1,9 @@
 import {JetView, plugins} from "webix-jet";
-
 export default class TopView extends JetView{
-
 	config(){
-
 		var header = {
 			type:"header", template:"My App"
 		};
-
 		var menu = {
 			view:"menu", id:"top_menu",
 			width:180, layout:"y", select:true,
@@ -18,16 +14,14 @@ export default class TopView extends JetView{
 				{ value:"Settings", id:"settings", icon:"wxi-dots"}
 			]
 		};
-
 		var ui = {
-			 cols:[
+			cols:[
 				{rows:[{rows:[header, menu]}]},
 				{rows:[
 					{ $subview:true }
 				]}
 			]
 		};
-
 		return ui;
 	}
 	init(){
