@@ -12,32 +12,30 @@ export default class ContactsView extends JetView{
 			select:true
 		};
 		var contacts_form = {
-      view:"form",
-      id:"contacts_form",
-      width:350,
-      elements:[
-        {
-          margin:10,
-          rows:[
-            {template:"EDIT CONTACTS", type:"section"},
-            {view:"text", label:"Name", name:"Name", invalidMessage:"Enter correct Name"},
-            {view:"text", label:"Email", name:"Email", invalidMessage:"Enter correct Email"},
-						{
-							margin:20, cols:[
-								{view:"button", value:"Save", css:"webix_primary", click:() => this.saveHandler("contacts_form")},
-		            {view:"button", value:"Clear", css:"webix_secondary", click:() => this.clearHandler("contacts_form")}
-							]
-						}
-          ]
-        },{}
-      ],
+			view:"form",
+			id:"contacts_form",
+			width:350,
+			elements:[
+				{
+					margin:10,
+					rows:[
+						{template:"EDIT CONTACTS", type:"section"},
+						{view:"text", label:"Name", name:"Name", invalidMessage:"Enter correct Name"},
+						{view:"text", label:"Email", name:"Email", invalidMessage:"Enter correct Email"},
+						{margin:20, cols:[
+							{view:"button", value:"Save", css:"webix_primary", click:() => this.saveHandler("contacts_form")},
+							{view:"button", value:"Clear", css:"webix_secondary", click:() => this.clearHandler("contacts_form")}
+						]}
+					]
+				},{}
+			],
 			rules:{
-        Name:function(value){
+		    Name:function(value){
 					return textValidation(value,20);
 				},
 				Email:webix.rules.isEmail
-    	}
-    };
+			}
+		};
 		return {
 			cols:[
 				contacts_list,
@@ -46,26 +44,25 @@ export default class ContactsView extends JetView{
 		};
 	}
 	init(){
-		$$("contacts_list").parse(contacts);
+		webix.$$("contacts_list").parse(contacts);
 	}
 	clearHandler(form_id){
-		var form_collection = $$(form_id);
+		var form_collection = webix.$$(form_id);
 		webix.confirm({
 			title:"Form would be cleared",
 			text:"Do you still want to continue?",
 			type:"confirm-warning"
 		}).then(
-			function(){
-				form_collection.clear();
-				form_collection.clearValidation();
-			},
-			function(){
-				webix.message("Rejected");
-			}
-		);
-  }
+		function(){
+			form_collection.clear();
+			form_collection.clearValidation();
+		},
+		function(){
+			webix.message("Rejected");
+		});
+	}
 	saveHandler(form_id){
-		var form_collection = $$(form_id);
+		var form_collection = webix.$$(form_id);
 		if(form_collection.validate()){
 			webix.message({
 				text:"Data has edited successfully",

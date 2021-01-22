@@ -9,11 +9,11 @@ export default class DataView extends JetView{
 	    cells:[
 	      {
 	        header:"Countries",
-	        body: new GridView(this.app, "countries_id", "Countries", countries)
+	        body: new GridView(this.app, countries)
 	      },
 	      {
 					header:"Statuses",
-	        body: new GridView(this.app, "statuses_id", "Statuses", statuses)
+	        body: new GridView(this.app, statuses)
 	 			}
 	    ]
 		};
