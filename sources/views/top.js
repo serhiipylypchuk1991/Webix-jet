@@ -1,30 +1,50 @@
-import {JetView, plugins} from "webix-jet";
+import {JetView} from "webix-jet";
 export default class TopView extends JetView{
+
 	config(){
-		var header = {
-			type:"header", template:"My App"
+		const _ = this.app.getService("locale")._;
+
+		const header = {
+			type:"header", template:_("My App")
 		};
-		var menu = {
-			view:"menu", id:"top_menu",
-			width:180, layout:"y", select:true,
-			template:"<span class='webix_icon #icon#'></span> #value# ",
+
+		const sidebar = {
+			width:300,
+			minWidth:250,
+			maxWidth:350,
+			view:"list",
+			scroll:false,
+			css:"gray_background",
+			select:true,
 			data:[
-				{ value:"Contacts", id:"contacts", icon:"wxi-user"},
-				{ value:"Data", id:"data", icon:"wxi-pencil"},
-				{ value:"Settings", id:"settings", icon:"wxi-dots"}
-			]
+				{ value:_("Contacts"), id:"contacts" },
+				{ value:_("Data"), id:"data" },
+				{ value:_("Settings"), id:"settings" }
+			],
+			on:{
+				onAfterSelect:(id) => this.show(id)
+			}
 		};
-		var ui = {
+
+		const ui = {
 			cols:[
-				{rows:[{rows:[header, menu]}]},
-				{rows:[
-					{ $subview:true }
-				]}
+				{rows:[{ rows:[header, sidebar]}] },
+				{rows:[{ $subview:true }]}
 			]
 		};
+
 		return ui;
 	}
-	init(){
-		this.use(plugins.Menu, "top_menu");
+
+	urlChange(view, url){
+		const list = view.queryView("list");
+		const id_page = url[1].page;
+
+		if(!list.isSelected(id_page)){
+			list.select(id_page);
+		}
+
+
 	}
+
 }

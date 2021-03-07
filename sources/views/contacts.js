@@ -1,81 +1,89 @@
 import {JetView} from "webix-jet";
+import FormView from "views/form";
 import {contacts} from "models/contacts";
-import {textValidation} from "models/validate_function";
+
 export default class ContactsView extends JetView{
 	config(){
-		var contacts_list = {
-			view:"list",
-			id:"contacts_list",
-			template:"#Name#, #Email#",
-			scrollY:true,
-			scrollX:false,
-			select:true
-		};
-		var contacts_form = {
-			view:"form",
-			id:"contacts_form",
-			width:350,
-			elements:[
-				{
-					margin:10,
-					rows:[
-						{template:"EDIT CONTACTS", type:"section"},
-						{view:"text", label:"Name", name:"Name", invalidMessage:"Enter correct Name"},
-						{view:"text", label:"Email", name:"Email", invalidMessage:"Enter correct Email"},
-						{margin:20, cols:[
-							{view:"button", value:"Save", css:"webix_primary", click:() => this.saveHandler("contacts_form")},
-							{view:"button", value:"Clear", css:"webix_secondary", click:() => this.clearHandler("contacts_form")}
-						]}
-					]
-				},{}
-			],
-			rules:{
-				Name:function(value){
-					return textValidation(value,20);
-				},
-				Email:webix.rules.isEmail
+		const _ = this.app.getService("locale")._;
+
+		const add_new_button = {
+			view:"button",
+			value:_("Add new"),
+			css:"webix_primary",
+			click:()=>{
+				webix.message({text:_("New element was added"), expire:350});
+				const new_contact = { Name:"Name", Email:"Email", Status:0, Country:0};
+				contacts.add(new_contact);
 			}
 		};
+
+		const contacts_list = {
+			view:"list",
+			template:"#Name#, #Email# <span class='remove_list_item_btn webix_icon mdi mdi-close'></span>",
+			scrollY:true,
+			scrollX:false,
+			select:true,
+			on:{
+				onAfterSelect:function(id){
+					this.$scope.setParam("id", id, true);
+				}
+			},
+			onClick:{
+				remove_list_item_btn:function(e, id){
+					webix.confirm({
+						title:_("Contact data would be deleted"),
+						text:_("Do you still want to continue?"),
+						type:"confirm-warning"
+					}).then(() => {
+
+						webix.message({
+							text:_("Element was deleted"),
+							type:"info"
+						});
+
+						const prev_id = this.getPrevId(id);
+						const next_id = this.getNextId(id);
+
+						contacts.remove(id);
+
+						if(prev_id){
+							this.select(prev_id);
+						}else{
+							this.select(next_id);
+						}
+
+						return false;
+					},
+					function(){
+						webix.message(_("Rejected"));
+					}
+					);
+				}
+			}
+		};
+
 		return {
 			cols:[
-				contacts_list,
-				contacts_form
+				{rows:[
+					contacts_list,
+					add_new_button
+				]},
+				FormView
 			]
 		};
 	}
-	init(){
-		webix.$$("contacts_list").parse(contacts);
-	}
-	clearHandler(form_id){
-		var form_collection = webix.$$(form_id);
-		webix.confirm({
-			title:"Form would be cleared",
-			text:"Do you still want to continue?",
-			type:"confirm-warning"
-		}).then(
-			function(){
-				form_collection.clear();
-				form_collection.clearValidation();
-			},
-			function(){
-				webix.message("Rejected");
-			});
-	}
-	saveHandler(form_id){
-		var form_collection = webix.$$(form_id);
-		if(form_collection.validate()){
-			webix.message({
-				text:"Data has edited successfully",
-				type:"success",
-				expire:3000
-			});
-			form_collection.clear();
+
+	init(view){
+		const list = view.queryView("list");
+		const id_url = this.getParam("id");
+
+		list.parse(contacts);
+
+		if(id_url && contacts.exists(id_url)){
+			list.select(id_url);
 		}else{
-			webix.message({
-				text:"Please, enter the correct data in the fields of the form",
-				type:"error",
-				expire:3000
-			});
+			list.select(list.getFirstId());
 		}
 	}
+
 }
