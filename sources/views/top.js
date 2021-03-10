@@ -28,23 +28,12 @@ export default class TopView extends JetView{
 
 		const ui = {
 			cols:[
-				{rows:[{ rows:[header, sidebar]}] },
-				{rows:[{ $subview:true }]}
+				{ rows:[header, sidebar] },
+				{ $subview:true }
 			]
 		};
 
 		return ui;
-	}
-
-	urlChange(view, url){
-		const list = view.queryView("list");
-		const id_page = url[1].page;
-
-		if(!list.isSelected(id_page)){
-			list.select(id_page);
-		}
-
-
 	}
 
 }

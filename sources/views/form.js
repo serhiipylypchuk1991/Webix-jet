@@ -15,11 +15,11 @@ export default class FormView extends JetView{
 				{ type:"section", template:_("edit contact") },
 				{ view:"text", label:_("Name"), name:"Name", invalidMessage:_("Enter correct Name") },
 				{ view:"text", label:_("Email"), name:"Email", invalidMessage:_("Enter correct Email") },
-				{ view:"combo", label:_("Country"), name:"Country", options:{data:countries}},
-				{ view:"combo", label:_("Status"), name:"Status", options:{data:statuses}},
+				{ view:"combo", label:_("Country"), name:"Country", options:{data:countries} },
+				{ view:"combo", label:_("Status"), name:"Status", options:{data:statuses} },
 				{
 					margin:10, cols:[
-						{ view:"button", value:_("Save"), css:"webix_primary", click:() => this.saveHandler()},
+						{ view:"button", value:_("Save"), css:"webix_primary", click:() => this.saveHandler() },
 						{ view:"button", value:_("Clear"), css:"webix_secondary", click:() => this.clearHandler() }
 					]
 				},
@@ -37,12 +37,14 @@ export default class FormView extends JetView{
 	}
 
 	urlChange(view){
-		const id_url = this.getParam("id");
-		const exist_id = contacts.exists(id_url);
+		const url_id = this.getParam("id");
+		const exist_id = contacts.exists(url_id);
 
-		if(id_url && exist_id){
-			const form_data = contacts.getItem(id_url);
+		if(url_id && exist_id){
+			const form_data = contacts.getItem(url_id);
 			view.parse(form_data);
+		}else{
+			view.clear();
 		}
 	}
 

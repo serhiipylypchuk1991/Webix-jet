@@ -15,11 +15,7 @@ export default class GridView extends JetView {
 			view:"button",
 			value:_("Add new"),
 			css:"webix_primary",
-			click:()=>{
-				webix.message({text:_("New element was added"), expire:350});
-				this.grid.add({id:0, value:"New"});
-				scrollToLastAddedElemen(this.grid,true,true);
-			}
+			click:() => this.addNewElement()
 		};
 
 		const datatable = {
@@ -31,26 +27,7 @@ export default class GridView extends JetView {
 				{ id:"value", header:_("Name"), editor:"text", fillspace:true, sort:"text"},
 				{ id:"del", header:"", template:"{common.trashIcon()}", width:60}
 			],
-			onClick:{
-				"wxi-trash":function(e, id){
-					webix.confirm({
-						title:_("Element would be deleted"),
-						text:_("Do you still want to continue?"),
-						type:"confirm-warning"
-					}).then(() => {
-						webix.message({
-							text:_("Element was deleted"),
-							type:"info"
-						});
-						this.remove(id);
-						return false;
-					},
-					function(){
-						webix.message(_("Rejected"));
-					}
-					);
-				}
-			},
+			onClick:{ "wxi-trash":(e,id) => this.removeElement(id) },
 			on:{
 				onValidationError:function(id){
 					this.unselect(id);
@@ -65,6 +42,36 @@ export default class GridView extends JetView {
 		};
 
 		return {margin:3, rows:[add_new_button,datatable]};
+	}
+
+	addNewElement(){
+		const _ = this.app.getService("locale")._;
+		
+		webix.message({text:_("New element was added"), expire:350});
+		this.data.add({value:"New"});
+		scrollToLastAddedElemen(this.grid,true,true);
+	}
+
+	removeElement(id){
+		const _ = this.app.getService("locale")._;
+
+		webix.confirm({
+			title:_("Element would be deleted"),
+			text:_("Do you still want to continue?"),
+			type:"confirm-warning"
+		}).then(() => {
+			webix.message({
+				text:_("Element was deleted"),
+				type:"info"
+			});
+
+			this.data.remove(id);
+
+			return false;
+		},
+		function(){
+			webix.message(_("Rejected"));
+		});
 	}
 
 	init(view){
