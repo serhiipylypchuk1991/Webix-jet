@@ -37,11 +37,10 @@ export default class FormView extends JetView{
 	}
 
 	urlChange(view){
-		const url_id = this.getParam("id");
-		const exist_id = contacts.exists(url_id);
+		const id = this.getParam("id");
 
-		if(url_id && exist_id){
-			const form_data = contacts.getItem(url_id);
+		if(id && contacts.exists(id)){
+			const form_data = contacts.getItem(id);
 			view.parse(form_data);
 		}else{
 			view.clear();

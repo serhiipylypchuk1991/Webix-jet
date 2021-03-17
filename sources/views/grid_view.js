@@ -46,10 +46,9 @@ export default class GridView extends JetView {
 
 	addNewElement(){
 		const _ = this.app.getService("locale")._;
-		
 		webix.message({text:_("New element was added"), expire:350});
-		this.data.add({value:"New"});
-		scrollToLastAddedElemen(this.grid,true,true);
+		const id_new_elem = this.data.add({value:"New"});
+		scrollToLastAddedElemen(this.grid,id_new_elem,true,true);
 	}
 
 	removeElement(id){
@@ -66,8 +65,6 @@ export default class GridView extends JetView {
 			});
 
 			this.data.remove(id);
-
-			return false;
 		},
 		function(){
 			webix.message(_("Rejected"));

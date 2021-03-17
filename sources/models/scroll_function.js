@@ -1,11 +1,10 @@
-export function scrollToLastAddedElemen(component,show,select){
-	var last_id = component.getLastId();
-	if(last_id){
+export function scrollToLastAddedElemen(component,id,show,select){
+	if(id){
 		if(show === true && select === true){
-			component.showItem(last_id);
-			component.select(last_id);
+			component.showItem(id);
+			component.select(id);
 		}else{
-			component.showItem(last_id);
+			component.showItem(id);
 		}
 	}
 }

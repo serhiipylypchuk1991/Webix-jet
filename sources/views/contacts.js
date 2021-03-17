@@ -38,10 +38,8 @@ export default class ContactsView extends JetView{
 		const _ = this.app.getService("locale")._;
 		webix.message({text:_("New element was added"), expire:350});
 		const new_contact = { Name:"Name", Email:"Email", Status:0, Country:0};
-		contacts.add(new_contact);
-
-		const new_id = contacts.getLastId();
-		this.getRoot().queryView("list").select(new_id);
+		const id_new = contacts.add(new_contact);
+		this.getRoot().queryView("list").select(id_new);
 	}
 	removeContact(id){
 		const _ = this.app.getService("locale")._;
@@ -57,7 +55,6 @@ export default class ContactsView extends JetView{
 
 			contacts.remove(id);
 			this.show("contacts");
-			return false;
 		},
 		function(){
 			webix.message(_("Rejected"));
@@ -74,14 +71,9 @@ export default class ContactsView extends JetView{
 
 	urlChange(view){
 		const list = view.queryView("list");
-		const url_id = this.getParam("id");
-		const first_id = contacts.getFirstId();
-
-		if(url_id && contacts.exists(url_id)){
-			list.select(url_id);
-		}else if(first_id){
-			list.select(first_id);
+		const id = this.getParam("id") || contacts.getFirstId();
+		if(contacts.exists(id)){
+			list.select(id);
 		}
 	}
-
 }
