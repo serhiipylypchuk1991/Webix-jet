@@ -52,7 +52,24 @@ export default class GridView extends JetView {
 	}
 
 	removeElement(id){
-		this.data.remove(id);
+		const _ = this.app.getService("locale")._;
+
+		webix.confirm({
+			title:_("Element would be deleted"),
+			text:_("Do you still want to continue?"),
+			type:"confirm-warning"
+		}).then(() => {
+			webix.message({
+				text:_("Element was deleted"),
+				type:"info"
+			});
+
+			this.data.remove(id);
+		},
+		function(){
+			webix.message(_("Rejected"));
+		});
+		return false;
 	}
 
 	init(view){

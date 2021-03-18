@@ -41,11 +41,25 @@ export default class ContactsView extends JetView{
 		const id_new = contacts.add(new_contact);
 		this.getRoot().queryView("list").select(id_new);
 	}
-
 	removeContact(id){
-		contacts.remove(id);
+		const _ = this.app.getService("locale")._;
+		webix.confirm({
+			title:_("Contact data would be deleted"),
+			text:_("Do you still want to continue?"),
+			type:"confirm-warning"
+		}).then(() => {
+			webix.message({
+				text:_("Element was deleted"),
+				type:"info"
+			});
+			contacts.remove(id);
+		},
+		function(){
+			webix.message(_("Rejected"));
+		});
+		return false;
 	}
-	
+
 	selectContact(id){
 		this.setParam("id", id, true);
 	}
