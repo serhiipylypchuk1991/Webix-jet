@@ -24,7 +24,7 @@ export default class GridView extends JetView {
 			scrollY:true,
 			minWidth:400,
 			columns:[
-				{ id:"value", header:_("Name"), editor:"text", fillspace:true, sort:"text"},
+				{ id:"Name", header:_("Name"), editor:"text", fillspace:true, sort:"text"},
 				{ id:"del", header:"", template:"{common.trashIcon()}", width:60}
 			],
 			onClick:{ "wxi-trash":(e,id) => this.removeElement(id) },
@@ -35,8 +35,8 @@ export default class GridView extends JetView {
 			},
 			editable:true,
 			rules:{
-				value:function(value){
-					return textValidation(value,20);
+				Name:function(Name){
+					return textValidation(Name, 20);
 				}
 			}
 		};
@@ -47,7 +47,7 @@ export default class GridView extends JetView {
 	addNewElement(){
 		const _ = this.app.getService("locale")._;
 		webix.message({text:_("New element was added"), expire:350});
-		const id_new_elem = this.data.add({value:"New"});
+		const id_new_elem = this.data.add({Name:"New"});
 		scrollToLastAddedElemen(this.grid,id_new_elem,true,true);
 	}
 
@@ -74,7 +74,7 @@ export default class GridView extends JetView {
 
 	init(view){
 		this.grid = view.queryView("datatable");
-		this.grid.parse(this.data);
+		this.grid.sync(this.data);
 	}
 
 }
