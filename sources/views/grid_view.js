@@ -1,6 +1,5 @@
 import {JetView} from "webix-jet";
 import {textValidation} from "models/validate_function";
-import {scrollToLastAddedElemen} from "models/scroll_function";
 
 export default class GridView extends JetView {
 	constructor(app, data){
@@ -48,7 +47,10 @@ export default class GridView extends JetView {
 		const _ = this.app.getService("locale")._;
 		webix.message({text:_("New element was added"), expire:350});
 		const id_new_elem = this.data.add({Name:"New"});
-		scrollToLastAddedElemen(this.grid,id_new_elem,true,true);
+		this.data.waitData.then(() => {
+			this.grid.showItem(id_new_elem);
+			this.grid.select(id_new_elem);
+		});
 	}
 
 	removeElement(id){
