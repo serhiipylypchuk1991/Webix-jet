@@ -43,14 +43,18 @@ export default class GridView extends JetView {
 		return {margin:3, rows:[add_new_button,datatable]};
 	}
 
+	showAndSelect(id){
+		this.grid.showItem(id["id"]);
+		this.grid.select(id["id"]);
+	}
+
 	addNewElement(){
 		const _ = this.app.getService("locale")._;
 		webix.message({text:_("New element was added"), expire:350});
-		const id_new_elem = this.data.add({Name:"New"});
-		this.data.waitData.then(() => {
-			this.grid.showItem(id_new_elem);
-			this.grid.select(id_new_elem);
-		});
+
+		this.data.waitSave(function(){
+    	const id_new_elem = this.add({Name:"New"});
+		}).then((id_new_elem) => this.showAndSelect(id_new_elem));
 	}
 
 	removeElement(id){
