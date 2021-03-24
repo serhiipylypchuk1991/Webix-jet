@@ -1,6 +1,5 @@
 import {JetView} from "webix-jet";
 import {textValidation} from "models/validate_function";
-import {scrollToLastAddedElemen} from "models/scroll_function";
 
 export default class GridView extends JetView {
 	constructor(app, data){
@@ -24,7 +23,7 @@ export default class GridView extends JetView {
 			scrollY:true,
 			minWidth:400,
 			columns:[
-				{ id:"value", header:_("Name"), editor:"text", fillspace:true, sort:"text"},
+				{ id:"Name", header:_("Name"), editor:"text", fillspace:true, sort:"text"},
 				{ id:"del", header:"", template:"{common.trashIcon()}", width:60}
 			],
 			onClick:{ "wxi-trash":(e,id) => this.removeElement(id) },
@@ -35,8 +34,8 @@ export default class GridView extends JetView {
 			},
 			editable:true,
 			rules:{
-				value:function(value){
-					return textValidation(value,20);
+				Name:function(Name){
+					return textValidation(Name, 20);
 				}
 			}
 		};
@@ -44,11 +43,18 @@ export default class GridView extends JetView {
 		return {margin:3, rows:[add_new_button,datatable]};
 	}
 
+	showAndSelect(id){
+		this.grid.showItem(id["id"]);
+		this.grid.select(id["id"]);
+	}
+
 	addNewElement(){
 		const _ = this.app.getService("locale")._;
 		webix.message({text:_("New element was added"), expire:350});
-		const id_new_elem = this.data.add({value:"New"});
-		scrollToLastAddedElemen(this.grid,id_new_elem,true,true);
+
+		this.data.waitSave(function(){
+    	const id_new_elem = this.add({Name:"New"});
+		}).then((id_new_elem) => this.showAndSelect(id_new_elem));
 	}
 
 	removeElement(id){
@@ -74,7 +80,7 @@ export default class GridView extends JetView {
 
 	init(view){
 		this.grid = view.queryView("datatable");
-		this.grid.parse(this.data);
+		this.grid.sync(this.data);
 	}
 
 }

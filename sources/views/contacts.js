@@ -38,8 +38,13 @@ export default class ContactsView extends JetView{
 		const _ = this.app.getService("locale")._;
 		webix.message({text:_("New element was added"), expire:350});
 		const new_contact = { Name:"Name", Email:"Email", Status:0, Country:0};
-		const id_new = contacts.add(new_contact);
-		this.getRoot().queryView("list").select(id_new);
+
+		contacts.waitSave(() => {
+			contacts.add(new_contact);
+		}).then((res) => {
+			this.getRoot().queryView("list").select(res.id);
+		});
+
 	}
 	removeContact(id){
 		const _ = this.app.getService("locale")._;
@@ -53,6 +58,7 @@ export default class ContactsView extends JetView{
 				type:"info"
 			});
 			contacts.remove(id);
+			this.show(contacts); //update url after deleting (if you delete the selected item, the app will select 1 element)
 		},
 		function(){
 			webix.message(_("Rejected"));
@@ -66,14 +72,25 @@ export default class ContactsView extends JetView{
 
 	init(view){
 		const list = view.queryView("list");
-		list.parse(contacts);
+		list.sync(contacts);
 	}
 
 	urlChange(view){
 		const list = view.queryView("list");
-		const id = this.getParam("id") || contacts.getFirstId();
-		if(contacts.exists(id)){
-			list.select(id);
-		}
+
+		contacts.waitData.then(() => {
+			const first_elem = contacts.getFirstId();
+			const url_elem = this.getParam("id");
+
+			//const id = this.getParam("id") || contacts.getFirstId(); it doesn't work here
+			if(contacts.exists(url_elem)){
+				list.select(url_elem);
+			} else if(contacts.exists(first_elem)){
+				list.select(first_elem);
+			} else {
+				//console.log("DB is empty");
+			}
+		});
+
 	}
 }
